@@ -21,16 +21,22 @@ export default function Navbar() {
     }`
 
   return (
-    <header className="sticky top-0 z-40 bg-ink/90 backdrop-blur border-b border-white/10">
-      <nav className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          <span className="text-2xl"><img src="/hma.png" alt="HMA Super Cup" style="height:1.2em; vertical-align:middle; margin-right:0.4em;" /></span>
-          <span className="font-display text-lg leading-none">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-ink/95 backdrop-blur-sm">
+      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex shrink-0 items-center gap-3 rounded-full px-2 py-1 transition hover:bg-white/5">
+          <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white/10">
+            <img
+              src="/hma.png"
+              alt="HMA Super Cup"
+              className="h-7 w-7 object-contain"
+            />
+          </div>
+          <span className="font-display text-lg leading-none tracking-wide">
             HMA <span className="text-gold">Super Cup</span>
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden items-center gap-1 md:flex">
           {links.map((l) => (
             <NavLink key={l.to} to={l.to} end={l.end} className={linkClass}>
               {l.label}
@@ -38,14 +44,14 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-2">
-          <NavLink to={user ? '/admin' : '/login'} className="btn-ghost text-sm py-1.5">
+        <div className="hidden items-center gap-2 md:flex">
+          <NavLink to={user ? '/admin' : '/login'} className="btn-ghost rounded-full px-4 py-1.5 text-sm">
             {user ? 'Admin Panel' : 'Admin Login'}
           </NavLink>
         </div>
 
         <button
-          className="md:hidden btn-ghost py-1.5 px-3"
+          className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-lg text-white transition hover:bg-white/10 md:hidden"
           onClick={() => setOpen((o) => !o)}
           aria-label="Toggle menu"
         >
@@ -54,15 +60,17 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <div className="md:hidden border-t border-white/10 px-4 py-3 flex flex-col gap-1 bg-ink">
-          {links.map((l) => (
-            <NavLink key={l.to} to={l.to} end={l.end} className={linkClass} onClick={() => setOpen(false)}>
-              {l.label}
+        <div className="border-t border-white/10 bg-ink/95 px-4 py-3 md:hidden">
+          <div className="flex flex-col gap-1">
+            {links.map((l) => (
+              <NavLink key={l.to} to={l.to} end={l.end} className={linkClass} onClick={() => setOpen(false)}>
+                {l.label}
+              </NavLink>
+            ))}
+            <NavLink to={user ? '/admin' : '/login'} className={linkClass} onClick={() => setOpen(false)}>
+              {user ? 'Admin Panel' : 'Admin Login'}
             </NavLink>
-          ))}
-          <NavLink to={user ? '/admin' : '/login'} className={linkClass} onClick={() => setOpen(false)}>
-            {user ? 'Admin Panel' : 'Admin Login'}
-          </NavLink>
+          </div>
         </div>
       )}
     </header>
