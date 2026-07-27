@@ -44,11 +44,11 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden items-center gap-2 md:flex">
+        {/* <div className="hidden items-center gap-2 md:flex">
           <NavLink to={user ? '/admin' : '/login'} className="btn-ghost rounded-full px-4 py-1.5 text-sm">
             {user ? 'Admin Panel' : 'Admin Login'}
           </NavLink>
-        </div>
+        </div> */}
 
         <button
           className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-lg text-white transition hover:bg-white/10 md:hidden"
