@@ -24,7 +24,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 bg-ink/90 backdrop-blur border-b border-white/10">
       <nav className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <span className="text-2xl">⚽</span>
+          <span className="text-2xl"><img src="/hma.png" alt="HMA Super Cup" style="height:1.2em; vertical-align:middle; margin-right:0.4em;" /></span>
           <span className="font-display text-lg leading-none">
             HMA <span className="text-gold">Super Cup</span>
           </span>
