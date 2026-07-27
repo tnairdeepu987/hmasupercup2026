@@ -67,9 +67,9 @@ export default function Navbar() {
                 {l.label}
               </NavLink>
             ))}
-            <NavLink to={user ? '/admin' : '/login'} className={linkClass} onClick={() => setOpen(false)}>
+            {/* <NavLink to={user ? '/admin' : '/login'} className={linkClass} onClick={() => setOpen(false)}>
               {user ? 'Admin Panel' : 'Admin Login'}
-            </NavLink>
+            </NavLink> */}
           </div>
         </div>
       )}
