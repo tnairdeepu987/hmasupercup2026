@@ -1,7 +1,28 @@
 import { createClient } from '@supabase/supabase-js'
 
-const url = import.meta.env.VITE_SUPABASE_URL
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const normalizeSupabaseUrl = (value) => {
+  if (!value) return ''
+
+  const cleaned = value.trim().replace(/\/+$/, '')
+  try {
+    const parsed = new URL(cleaned)
+    const normalizedPath = parsed.pathname.replace(/\/+$/, '')
+    const servicePaths = ['/rest/v1', '/auth/v1', '/storage/v1', '/graphql/v1', '/realtime/v1']
+
+    if (servicePaths.includes(normalizedPath)) {
+      return parsed.origin
+    }
+
+    return parsed.origin + (normalizedPath && normalizedPath !== '/' ? normalizedPath : '')
+  } catch {
+    return cleaned
+  }
+}
+
+const rawUrl = import.meta.env.VITE_SUPABASE_URL?.trim() || ''
+const rawAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim() || ''
+const url = normalizeSupabaseUrl(rawUrl)
+const anonKey = rawAnonKey
 
 // A friendly flag the UI can use to show a "configure Supabase" banner
 // instead of crashing when env vars are missing (e.g. first local run).
