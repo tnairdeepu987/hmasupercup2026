@@ -1,4 +1,4 @@
-# ⚽ HMA Super Cup
+# <img src="/hma.ico" alt="HMA Super Cup" style="height:1.2em; vertical-align:middle; margin-right:0.4em;" /> HMA Super Cup
 
 A World Cup 2026–themed soccer tournament web app. Fans get live fixtures, results,
 standings, a knockout bracket and the golden boot race; admins manage everything from a

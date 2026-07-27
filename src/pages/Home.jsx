@@ -23,13 +23,13 @@ export default function Home() {
       <section className="relative overflow-hidden rounded-3xl bg-stadium pitch-stripes border border-white/10">
         <div className="relative px-6 py-14 md:py-20 text-center">
           <p className="text-gold font-bold tracking-[0.3em] uppercase text-sm mb-3">
-            World Cup 2026 · The Road to Glory
+            Halifax Malayali Association
           </p>
           <h1 className="font-display text-4xl md:text-6xl leading-tight drop-shadow">
             HMA <span className="text-gold">Super Cup</span>
           </h1>
           <p className="mt-4 text-white/70 max-w-xl mx-auto">
-            Follow every goal, every fixture and every twist of the tournament — live.
+            Powered by <a href="https://ecoshadehfx.ca/" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Ecoshade</a>.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link to="/fixtures" className="btn-primary">View Fixtures</Link>
