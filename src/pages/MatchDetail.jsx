@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useData } from '../context/DataContext.jsx'
 import { teamMap as buildTeamMap, playerMap as buildPlayerMap, goalsForMatch, STAGE_LABELS } from '../lib/stats.js'
-import { Loader, StatusChip, EmptyState, formatKickoff } from '../components/ui.jsx'
+import { Loader, StatusChip, EmptyState, formatKickoff, TeamBadge } from '../components/ui.jsx'
 
 export default function MatchDetail() {
   const { id } = useParams()
@@ -50,8 +50,9 @@ export default function MatchDetail() {
 
         <div className="grid grid-cols-3 items-center gap-4">
           <div className="text-center">
-            <div className="text-5xl">{home?.flag_emoji || '🏳️'}</div>
-            <div className="font-semibold mt-2">{home?.name || 'TBD'}</div>
+            <div className="flex justify-center">
+              <TeamBadge team={home} big />
+            </div>
           </div>
           <div className="text-center">
             {match.status !== 'scheduled' ? (
@@ -63,8 +64,9 @@ export default function MatchDetail() {
             )}
           </div>
           <div className="text-center">
-            <div className="text-5xl">{away?.flag_emoji || '🏳️'}</div>
-            <div className="font-semibold mt-2">{away?.name || 'TBD'}</div>
+            <div className="flex justify-center">
+              <TeamBadge team={away} big />
+            </div>
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useData } from '../context/DataContext.jsx'
 import { computeStandings } from '../lib/stats.js'
-import { Loader, SectionTitle, EmptyState } from '../components/ui.jsx'
+import { Loader, SectionTitle, EmptyState, TeamBadge } from '../components/ui.jsx'
 
 export default function Standings() {
   const { teams, matches, loading } = useData()
@@ -50,8 +50,7 @@ export default function Standings() {
                         <span className={i < 2 ? 'text-pitch-light font-bold' : ''}>{i + 1}</span>
                       </td>
                       <td className="px-2 py-2.5 whitespace-nowrap">
-                        <span className="mr-2">{r.team.flag_emoji}</span>
-                        <span className="font-semibold">{r.team.name}</span>
+                        <TeamBadge team={r.team} />
                       </td>
                       <td className="text-center px-2 tabular-nums">{r.played}</td>
                       <td className="text-center px-2 tabular-nums">{r.won}</td>

@@ -19,7 +19,13 @@ export function TeamBadge({ team, align = 'left', big = false }) {
   const flag = team.flag_emoji || '🏳️'
   const content = (
     <>
-      <span className={big ? 'text-2xl' : 'text-xl'}>{flag}</span>
+      <span className={`flex h-8 w-8 items-center justify-center overflow-hidden rounded bg-white/10 ${big ? 'h-9 w-9' : ''}`}>
+        {team.logo_url ? (
+          <img src={team.logo_url} alt={`${team.name} logo`} className="h-full w-full object-contain p-1" />
+        ) : (
+          <span className={big ? 'text-2xl' : 'text-xl'}>{flag}</span>
+        )}
+      </span>
       <span className={`font-semibold ${big ? 'text-lg' : ''}`}>{team.name}</span>
     </>
   )
