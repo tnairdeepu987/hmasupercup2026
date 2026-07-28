@@ -42,7 +42,13 @@ export default function Teams() {
                 onClick={() => setOpenId(open ? null : team.id)}
               >
                 <span className="flex items-center gap-3">
-                  <span className="text-2xl">{team.flag_emoji || '🏳️'}</span>
+                  <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded bg-white/10">
+                    {team.logo_url ? (
+                      <img src={team.logo_url} alt={`${team.name} logo`} className="h-full w-full object-contain p-1" />
+                    ) : (
+                      <span className="text-2xl">{team.flag_emoji || '🏳️'}</span>
+                    )}
+                  </div>
                   <span className="text-left">
                     <span className="font-semibold block">{team.name}</span>
                     <span className="text-white/40 text-xs">

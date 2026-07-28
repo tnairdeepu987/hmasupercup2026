@@ -78,7 +78,18 @@ export default function AdminTeams() {
         </div>
         <div>
           <label className="label">Logo URL (optional)</label>
-          <input className="input" value={form.logo_url} onChange={set('logo_url')} placeholder="https://…" />
+          <input className="input" value={form.logo_url} onChange={set('logo_url')} placeholder="https://example.com/logo.png" />
+          {form.logo_url && (
+            <div className="mt-2 rounded border border-white/10 bg-black/20 p-2">
+              <p className="mb-2 text-xs uppercase tracking-[0.2em] text-white/40">Preview</p>
+              <img
+                src={form.logo_url}
+                alt="Team logo preview"
+                className="h-16 w-16 object-contain"
+                onError={(e) => { e.currentTarget.style.display = 'none' }}
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex gap-2">
@@ -101,7 +112,13 @@ export default function AdminTeams() {
           {teams.map((t) => (
             <div key={t.id} className="px-4 py-3 flex items-center justify-between gap-3">
               <span className="flex items-center gap-3 min-w-0">
-                <span className="text-2xl">{t.flag_emoji || '🏳️'}</span>
+                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded bg-white/10">
+                  {t.logo_url ? (
+                    <img src={t.logo_url} alt={`${t.name} logo`} className="h-full w-full object-contain p-1" />
+                  ) : (
+                    <span className="text-2xl">{t.flag_emoji || '🏳️'}</span>
+                  )}
+                </div>
                 <span className="min-w-0">
                   <span className="font-semibold block truncate">{t.name}</span>
                   <span className="text-white/40 text-xs">
