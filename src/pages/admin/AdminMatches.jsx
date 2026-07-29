@@ -3,6 +3,7 @@ import { useData } from '../../context/DataContext.jsx'
 import { insertRow, updateRow, deleteRow, clean } from '../../lib/db.js'
 import { teamMap as buildTeamMap, goalsForMatch, STAGE_LABELS } from '../../lib/stats.js'
 import GoalManager from './GoalManager.jsx'
+import CautionManager from './CautionManager.jsx'
 
 const STAGES = ['group', 'round16', 'quarter', 'semi', 'third_place', 'final']
 const STATUSES = ['scheduled', 'live', 'finished']
@@ -27,7 +28,7 @@ function localInputToIso(local) {
 }
 
 export default function AdminMatches() {
-  const { teams, matches, goals, players, refresh } = useData()
+  const { teams, matches, goals, cautions, players, refresh } = useData()
   const tMap = useMemo(() => buildTeamMap(teams), [teams])
   const [form, setForm] = useState(EMPTY)
   const [editingId, setEditingId] = useState(null)
@@ -184,6 +185,7 @@ export default function AdminMatches() {
             const away = tMap.get(m.away_team_id)
             const stageText = m.stage === 'group' ? `Group ${m.group_label || ''}`.trim() : STAGE_LABELS[m.stage]
             const mGoals = goalsForMatch(goals, m.id)
+            const mCautions = cautions.filter((c) => c.match_id === m.id)
             const expanded = expandedId === m.id
             return (
               <div key={m.id}>
@@ -200,7 +202,7 @@ export default function AdminMatches() {
                   </div>
                   <div className="flex gap-2 shrink-0">
                     <button className="btn-ghost py-1 px-3 text-sm" onClick={() => setExpandedId(expanded ? null : m.id)}>
-                      ⚽ Goals ({mGoals.length})
+                      ⚽ Goals ({mGoals.length}) · 🟨 {mCautions.length}
                     </button>
                     <button className="btn-ghost py-1 px-3 text-sm" onClick={() => startEdit(m)}>Edit</button>
                     <button className="btn-danger py-1 px-3 text-sm" onClick={() => remove(m)}>Delete</button>
@@ -208,7 +210,12 @@ export default function AdminMatches() {
                 </div>
                 {expanded && (
                   <div className="px-4 pb-4 bg-black/20">
-                    <GoalManager match={m} homeTeam={home} awayTeam={away} players={players} goals={mGoals} refresh={refresh} />
+                    <div className="space-y-4">
+                      <GoalManager match={m} homeTeam={home} awayTeam={away} players={players} goals={mGoals} refresh={refresh} />
+                      <div className="border-t border-white/10 pt-3">
+                        <CautionManager match={m} homeTeam={home} awayTeam={away} players={players} cautions={mCautions} refresh={refresh} />
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

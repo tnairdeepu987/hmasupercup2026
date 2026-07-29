@@ -126,3 +126,9 @@ export function goalsForMatch(goals, matchId) {
     .filter((g) => g.match_id === matchId)
     .sort((a, b) => (a.minute ?? 0) - (b.minute ?? 0))
 }
+
+export function cautionsForMatch(cautions, matchId) {
+  return cautions
+    .filter((c) => c.match_id === matchId)
+    .sort((a, b) => (a.minute ?? 0) - (b.minute ?? 0))
+}

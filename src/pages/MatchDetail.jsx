@@ -1,18 +1,19 @@
 import { useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useData } from '../context/DataContext.jsx'
-import { teamMap as buildTeamMap, playerMap as buildPlayerMap, goalsForMatch, STAGE_LABELS } from '../lib/stats.js'
+import { teamMap as buildTeamMap, playerMap as buildPlayerMap, goalsForMatch, cautionsForMatch, STAGE_LABELS } from '../lib/stats.js'
 import { Loader, StatusChip, EmptyState, formatKickoff, TeamBadge } from '../components/ui.jsx'
 
 export default function MatchDetail() {
   const { id } = useParams()
-  const { matches, teams, players, goals, loading } = useData()
+  const { matches, teams, players, goals, cautions, loading } = useData()
 
   const tMap = useMemo(() => buildTeamMap(teams), [teams])
   const pMap = useMemo(() => buildPlayerMap(players), [players])
 
   const match = matches.find((m) => m.id === id)
   const matchGoals = useMemo(() => (match ? goalsForMatch(goals, match.id) : []), [goals, match])
+  const matchCautions = useMemo(() => (match ? cautionsForMatch(cautions, match.id) : []), [cautions, match])
 
   if (loading) return <Loader />
   if (!match) return <EmptyState icon="❓" title="Match not found"><Link to="/fixtures" className="text-gold hover:underline">Back to fixtures</Link></EmptyState>
@@ -23,6 +24,8 @@ export default function MatchDetail() {
 
   const homeGoals = matchGoals.filter((g) => g.team_id === match.home_team_id)
   const awayGoals = matchGoals.filter((g) => g.team_id === match.away_team_id)
+  const homeCautions = matchCautions.filter((c) => c.team_id === match.home_team_id)
+  const awayCautions = matchCautions.filter((c) => c.team_id === match.away_team_id)
 
   const goalLine = (g) => {
     const scorer = pMap.get(g.scorer_id)
@@ -34,6 +37,19 @@ export default function MatchDetail() {
         {g.is_penalty && <span className="text-gold text-xs ml-1">(pen)</span>}
         {g.is_own_goal && <span className="text-red-300 text-xs ml-1">(OG)</span>}
         {assist && <span className="text-white/40 text-xs block">assist: {assist.name}</span>}
+      </div>
+    )
+  }
+
+  const cautionLine = (c) => {
+    const player = pMap.get(c.player_id)
+    return (
+      <div key={c.id} className="text-sm py-1">
+        <span className="font-semibold">{player?.name || 'Unknown'}</span>
+        <span className="text-white/40"> {c.minute}'</span>
+        <span className={c.card_type === 'red' ? 'text-red-300 text-xs ml-1' : 'text-yellow-300 text-xs ml-1'}>
+          {c.card_type === 'red' ? 'Red card' : 'Yellow card'}
+        </span>
       </div>
     )
   }
@@ -87,6 +103,20 @@ export default function MatchDetail() {
           <div className="grid grid-cols-2 gap-6">
             <div>{homeGoals.map(goalLine)}</div>
             <div className="text-right">{awayGoals.map(goalLine)}</div>
+          </div>
+        )}
+      </div>
+
+      <div className="card p-6">
+        <h3 className="font-display text-xl mb-4">🟨 Cautions</h3>
+        {matchCautions.length === 0 ? (
+          <p className="text-white/40 text-sm">
+            {match.status === 'scheduled' ? 'No cautions recorded yet.' : 'No cautions recorded.'}
+          </p>
+        ) : (
+          <div className="grid grid-cols-2 gap-6">
+            <div>{homeCautions.map(cautionLine)}</div>
+            <div className="text-right">{awayCautions.map(cautionLine)}</div>
           </div>
         )}
       </div>

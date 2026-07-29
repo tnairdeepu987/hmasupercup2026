@@ -58,11 +58,23 @@ create table if not exists public.goals (
   created_at   timestamptz not null default now()
 );
 
+-- Cautions (yellow/red card events)
+create table if not exists public.cautions (
+  id           uuid primary key default gen_random_uuid(),
+  match_id     uuid references public.matches(id) on delete cascade,
+  team_id      uuid references public.teams(id)   on delete set null,
+  player_id    uuid references public.players(id) on delete set null,
+  card_type    text not null default 'yellow',
+  minute       int,
+  created_at   timestamptz not null default now()
+);
+
 -- Helpful indexes
 create index if not exists idx_players_team   on public.players(team_id);
 create index if not exists idx_matches_stage  on public.matches(stage);
 create index if not exists idx_goals_match    on public.goals(match_id);
 create index if not exists idx_goals_scorer   on public.goals(scorer_id);
+create index if not exists idx_cautions_match on public.cautions(match_id);
 
 -- =====================================================================
 --  Row Level Security
@@ -73,18 +85,21 @@ alter table public.teams   enable row level security;
 alter table public.players enable row level security;
 alter table public.matches enable row level security;
 alter table public.goals   enable row level security;
+alter table public.cautions enable row level security;
 
 -- Public read policies
 create policy "public read teams"   on public.teams   for select using (true);
 create policy "public read players" on public.players for select using (true);
 create policy "public read matches" on public.matches for select using (true);
 create policy "public read goals"   on public.goals   for select using (true);
+create policy "public read cautions" on public.cautions for select using (true);
 
 -- Authenticated write policies (insert / update / delete)
 create policy "admin write teams"   on public.teams   for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 create policy "admin write players" on public.players for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 create policy "admin write matches" on public.matches for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 create policy "admin write goals"   on public.goals   for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+create policy "admin write cautions" on public.cautions for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
 -- =====================================================================
 --  Realtime — publish table changes so the UI updates live
@@ -93,3 +108,4 @@ alter publication supabase_realtime add table public.teams;
 alter publication supabase_realtime add table public.players;
 alter publication supabase_realtime add table public.matches;
 alter publication supabase_realtime add table public.goals;
+alter publication supabase_realtime add table public.cautions;

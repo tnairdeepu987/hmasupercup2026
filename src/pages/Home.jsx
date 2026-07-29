@@ -6,7 +6,7 @@ import MatchCard from '../components/MatchCard.jsx'
 import { Loader, SectionTitle, EmptyState } from '../components/ui.jsx'
 
 export default function Home() {
-  const { teams, matches, players, goals, loading, error } = useData()
+  const { teams, matches, players, goals, cautions, loading, error } = useData()
   const tMap = useMemo(() => buildTeamMap(teams), [teams])
 
   const live = matches.filter((m) => m.status === 'live')
@@ -52,7 +52,7 @@ export default function Home() {
           <SectionTitle eyebrow="Happening now" title="Live Matches" />
           <div className="grid gap-4 sm:grid-cols-2">
             {live.map((m) => (
-              <MatchCard key={m.id} match={m} teamMap={tMap} />
+              <MatchCard key={m.id} match={m} teamMap={tMap} cautions={cautions} />
             ))}
           </div>
         </section>
@@ -67,7 +67,7 @@ export default function Home() {
           {upcoming.length ? (
             <div className="grid gap-4 sm:grid-cols-2">
               {upcoming.map((m) => (
-                <MatchCard key={m.id} match={m} teamMap={tMap} />
+                <MatchCard key={m.id} match={m} teamMap={tMap} cautions={cautions} />
               ))}
             </div>
           ) : (

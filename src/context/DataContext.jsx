@@ -3,13 +3,14 @@ import { supabase, isSupabaseConfigured } from '../lib/supabaseClient.js'
 
 const DataContext = createContext(null)
 
-const TABLES = ['teams', 'players', 'matches', 'goals']
+const TABLES = ['teams', 'players', 'matches', 'goals', 'cautions']
 
 export function DataProvider({ children }) {
   const [teams, setTeams] = useState([])
   const [players, setPlayers] = useState([])
   const [matches, setMatches] = useState([])
   const [goals, setGoals] = useState([])
+  const [cautions, setCautions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -20,18 +21,20 @@ export function DataProvider({ children }) {
       return
     }
     try {
-      const [t, p, m, g] = await Promise.all([
+      const [t, p, m, g, c] = await Promise.all([
         supabase.from('teams').select('*').order('group_label').order('name'),
         supabase.from('players').select('*').order('jersey_number'),
         supabase.from('matches').select('*').order('match_date'),
         supabase.from('goals').select('*').order('minute'),
+        supabase.from('cautions').select('*').order('minute'),
       ])
-      const firstErr = t.error || p.error || m.error || g.error
+      const firstErr = t.error || p.error || m.error || g.error || c.error
       if (firstErr) throw firstErr
       setTeams(t.data ?? [])
       setPlayers(p.data ?? [])
       setMatches(m.data ?? [])
       setGoals(g.data ?? [])
+      setCautions(c.data ?? [])
       setError(null)
     } catch (err) {
       console.error('[HMA Super Cup] data load failed:', err)
@@ -62,7 +65,7 @@ export function DataProvider({ children }) {
 
   return (
     <DataContext.Provider
-      value={{ teams, players, matches, goals, loading, error, refresh }}
+      value={{ teams, players, matches, goals, cautions, loading, error, refresh }}
     >
       {children}
     </DataContext.Provider>

@@ -12,7 +12,7 @@ const FILTERS = [
 ]
 
 export default function Fixtures() {
-  const { matches, teams, loading } = useData()
+  const { matches, teams, cautions, loading } = useData()
   const tMap = useMemo(() => buildTeamMap(teams), [teams])
   const [filter, setFilter] = useState('all')
 
@@ -61,7 +61,7 @@ export default function Fixtures() {
             </h3>
             <div className="grid gap-4 sm:grid-cols-2">
               {list.map((m) => (
-                <MatchCard key={m.id} match={m} teamMap={tMap} />
+                <MatchCard key={m.id} match={m} teamMap={tMap} cautions={cautions} />
               ))}
             </div>
           </section>
