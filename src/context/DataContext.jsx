@@ -21,21 +21,33 @@ export function DataProvider({ children }) {
       return
     }
     try {
-      const [t, p, m, g, c] = await Promise.all([
+      const [t, p, m, g, c] = await Promise.allSettled([
         supabase.from('teams').select('*').order('group_label').order('name'),
         supabase.from('players').select('*').order('jersey_number'),
         supabase.from('matches').select('*').order('match_date'),
         supabase.from('goals').select('*').order('minute'),
         supabase.from('cautions').select('*').order('minute'),
       ])
-      const firstErr = t.error || p.error || m.error || g.error || c.error
-      if (firstErr) throw firstErr
-      setTeams(t.data ?? [])
-      setPlayers(p.data ?? [])
-      setMatches(m.data ?? [])
-      setGoals(g.data ?? [])
-      setCautions(c.data ?? [])
-      setError(null)
+
+      const teamData = t.status === 'fulfilled' ? (t.value.data ?? []) : []
+      const playerData = p.status === 'fulfilled' ? (p.value.data ?? []) : []
+      const matchData = m.status === 'fulfilled' ? (m.value.data ?? []) : []
+      const goalData = g.status === 'fulfilled' ? (g.value.data ?? []) : []
+      const cautionData = c.status === 'fulfilled' ? (c.value.data ?? []) : []
+
+      const firstError = [t, p, m, g, c].find((r) => r.status === 'rejected')?.reason
+      const hasAnyData = teamData.length || playerData.length || matchData.length || goalData.length
+
+      setTeams(teamData)
+      setPlayers(playerData)
+      setMatches(matchData)
+      setGoals(goalData)
+      setCautions(cautionData)
+      setError(firstError && !hasAnyData ? (firstError.message || 'load-failed') : null)
+
+      if (firstError) {
+        console.warn('[HMA Super Cup] one or more tables were unavailable, continuing with the rest of the data:', firstError)
+      }
     } catch (err) {
       console.error('[HMA Super Cup] data load failed:', err)
       setError(err.message || 'load-failed')
